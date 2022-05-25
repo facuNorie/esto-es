@@ -17,4 +17,4 @@ Estos proyectos pueden tanto eliminarse como editarse en caso de que queramos co
 ## Filtro de búsqueda
 
 Como plus, se le agrega un buscador por nombre de proyecto.
-![Filtrar proyectos gif](./gifs/estoes04.gif)
+![Filtrar proyectos gif](./gifs/estoes03.gif)
