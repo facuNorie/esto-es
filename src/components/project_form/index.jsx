@@ -1,32 +1,66 @@
-import React, { useContext, useState } from 'react'
-import {
-  TextField,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-  FormHelperText,
-  Box,
-  Button,
-} from '@mui/material'
+import React, { useContext, useEffect, useState } from 'react'
+import { TextField, InputLabel, Box, Button } from '@mui/material'
 import { AppContext } from '../../context/context'
 import SelectInput from './SelectInput'
 
 export default function ProjectForm() {
-  const { addProject } = useContext(AppContext)
+  const {
+    addProject,
+    editionMode,
+    projectToEdit,
+    editProject,
+    setEditionMode,
+    setShowSection,
+  } = useContext(AppContext)
   const [projectManager, setProjectManager] = useState('')
   const [assignedTo, setAssignedTo] = useState('')
   const [enabled, setEnabled] = useState('')
   const [projectName, setProjectName] = useState('')
   const [description, setDescription] = useState('')
+
+  const cleanInput = () => {
+    setProjectName('')
+    setDescription('')
+    setEnabled('')
+    setProjectManager('')
+    setAssignedTo('')
+  }
+
+  const add = () => {
+    addProject(projectName, description, projectManager, assignedTo, enabled)
+    cleanInput()
+  }
+  const edit = () => {
+    editProject(projectName, description, projectManager, assignedTo, enabled)
+    cleanInput()
+    setEditionMode(false)
+    setTimeout(() => {
+      setShowSection(true)
+    }, 1000)
+  }
+
+  useEffect(() => {
+    if (editionMode) {
+      setProjectName(projectToEdit[0].projectName)
+      setEnabled(projectToEdit[0].enabled)
+      setProjectManager(projectToEdit[0].projectManager)
+      setDescription(projectToEdit[0].description)
+      setAssignedTo(projectToEdit[0].assignedTo)
+    }
+  }, [])
+
   return (
     <Box
-      sx={{ bgcolor: 'white', boxShadow: 2, borderRadius: 1 }}
-      width='60%'
+      sx={{
+        bgcolor: 'white',
+        boxShadow: 2,
+        borderRadius: 1,
+        width: { xs: '95%', sm: '60%' },
+        padding: { xs: 1, sm: 6 },
+      }}
       m='auto'
       display='flex'
       flexDirection='column'
-      p={6}
       component='form'
     >
       <Box mb={4}>
@@ -43,6 +77,7 @@ export default function ProjectForm() {
       <Box mb={4}>
         <InputLabel id='description'>Description</InputLabel>
         <TextField
+          autoComplete='off'
           id='description'
           variant='outlined'
           fullWidth
@@ -72,22 +107,20 @@ export default function ProjectForm() {
         <Button
           color='error'
           variant='contained'
+          disabled={
+            assignedTo === '' ||
+            enabled === '' ||
+            projectManager === '' ||
+            projectName === '' ||
+            description === ''
+              ? true
+              : false
+          }
           onClick={() => {
-            addProject(
-              projectName,
-              description,
-              projectManager,
-              assignedTo,
-              enabled
-            )
-            setProjectName('')
-            setDescription('')
-            setEnabled('')
-            setProjectManager('')
-            setAssignedTo('')
+            editionMode ? edit() : add()
           }}
         >
-          Create project
+          {editionMode ? 'Save changes' : 'Create project'}
         </Button>
       </div>
     </Box>
