@@ -19,7 +19,7 @@ function App() {
         sx={{
           backgroundColor: '#F0F2F5',
           height: '100vh',
-          padding: '32px',
+          padding: { xs: '10px 0', md: '48px' },
         }}
       >
         {showSection ? <Projects /> : <ProjectForm />}
